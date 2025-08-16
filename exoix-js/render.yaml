@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: exoix-js
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: REDIS_URI
+        fromDatabase:
+          name: exoix-redis
+          property: connectionString
+
+databases:
+  - name: exoix-redis
+    databaseName: exoix
+    user: exoix
