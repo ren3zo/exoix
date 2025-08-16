@@ -13,12 +13,23 @@ defmodule Exoix.Connectivity.Redis do
         do: Application.get_env(:Exoix, :redis_uri),
         else: "redis://#{System.get_env("REDIS_HOST")}:6379"
 
-    {:ok, client} = Redix.start_link(uri)
-    {:ok, conn} = Redix.PubSub.start_link(uri)
+    case Redix.start_link(uri) do
+      {:ok, client} ->
+        case Redix.PubSub.start_link(uri) do
+          {:ok, conn} ->
+            Redix.PubSub.subscribe(conn, "Exoix:global_sync", self())
+            Logger.info("Redis: Connected successfully")
+            {:ok, %{client: client, conn: conn}}
 
-    Redix.PubSub.subscribe(conn, "Exoix:global_sync", self())
+          {:error, reason} ->
+            Logger.warning("Redis PubSub: Failed to connect: #{inspect(reason)}")
+            {:ok, %{client: client, conn: nil}}
+        end
 
-    {:ok, %{client: client}}
+      {:error, reason} ->
+        Logger.warning("Redis: Failed to connect: #{inspect(reason)}")
+        {:ok, %{client: nil, conn: nil}}
+    end
   end
 
   def handle_info({:redix_pubsub, _pubsub, _pid, :subscribed, %{channel: channel}}, state) do
@@ -49,21 +60,24 @@ defmodule Exoix.Connectivity.Redis do
   end
 
   def handle_call({:hgetall, key}, _from, state) do
-    value = Redix.command(state[:client], ["HGETALL", key])
-
-    {:reply, value, state}
+    case state[:client] do
+      nil -> {:reply, {:error, :redis_not_connected}, state}
+      client -> {:reply, Redix.command(client, ["HGETALL", key]), state}
+    end
   end
 
   def handle_call({:hget, key, field}, _from, state) do
-    value = Redix.command(state[:client], ["HGET", key, field])
-
-    {:reply, value, state}
+    case state[:client] do
+      nil -> {:reply, {:error, :redis_not_connected}, state}
+      client -> {:reply, Redix.command(client, ["HGET", key, field]), state}
+    end
   end
 
   def handle_call({:get, key}, _from, state) do
-    value = Redix.command(state[:client], ["GET", key])
-
-    {:reply, value, state}
+    case state[:client] do
+      nil -> {:reply, {:error, :redis_not_connected}, state}
+      client -> {:reply, Redix.command(client, ["GET", key]), state}
+    end
   end
 
   def handle_cast({:set, key, value}, state) do

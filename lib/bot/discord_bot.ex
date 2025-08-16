@@ -17,14 +17,23 @@ defmodule Exoix.DiscordBot do
   end
 
   def handle_continue(:setup_bot, state) do
-    {_, pid} = Gateway.Client.start_link(%{token: state.token})
-    Process.monitor(pid)
+    case Gateway.Client.start_link(%{token: state.token}) do
+      {:ok, pid} ->
+        Process.monitor(pid)
+        Logger.info("Discord bot running on #{inspect(pid)}")
+        Exoix.Metrics.Collector.set(:gauge, :Exoix_monitored_users, 0)
+        {:noreply, %{state | gateway_client_pid: pid}}
 
-    Logger.info("Discord bot running on #{inspect(pid)}")
+      {:error, reason} ->
+        Logger.warning("Discord bot failed to start: #{inspect(reason)}")
+        # Retry after 30 seconds
+        Process.send_after(self(), :retry_bot, 30_000)
+        {:noreply, state}
+    end
+  end
 
-    Exoix.Metrics.Collector.set(:gauge, :Exoix_monitored_users, 0)
-
-    {:noreply, %{state | gateway_client_pid: pid}}
+  def handle_info(:retry_bot, state) do
+    {:noreply, state, {:continue, :setup_bot}}
   end
 
   def handle_info({:DOWN, _ref, :process, _pid, reason}, state) do
