@@ -1,29 +1,29 @@
-FROM elixir:1.14-alpine AS build
+FROM elixir:1.14-alpine
 
-RUN apk add git
+RUN apk add git redis
 
 ENV MIX_ENV=prod
 
 WORKDIR /app
 
-# get deps first so we have a cache
-ADD mix.exs mix.lock /app/
-RUN \
-	cd /app && \
-	mix local.hex --force && \
-	mix local.rebar --force && \
-	mix deps.get
+# Install hex and rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
 
-# then make a release build
-ADD . /app/
-RUN \
-	mix compile && \
-	mix release
+# Copy mix files first for better caching
+COPY mix.exs mix.lock ./
 
-FROM elixir:1.14-alpine
+# Get dependencies
+RUN mix deps.get
 
-RUN apk add redis
+# Copy the rest of the application
+COPY . .
 
-COPY --from=build /app/_build/prod/rel/Exoix /opt/Exoix
+# Compile the application
+RUN mix compile
 
-CMD [ "/opt/Exoix/bin/Exoix", "start" ]
+# Expose the port
+EXPOSE 4001
+
+# Start the application
+CMD ["mix", "run", "--no-halt"]
