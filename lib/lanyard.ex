@@ -1,4 +1,4 @@
-defmodule Lanyard do
+defmodule Exoix do
   require Logger
   use Application
 
@@ -9,16 +9,16 @@ defmodule Lanyard do
     :ets.new(:global_subscribers, [:named_table, :set, :public])
 
     children = [
-      {Finch, name: Lanyard.Finch},
-      {GenRegistry, worker_module: Lanyard.Presence},
-      {Lanyard.Metrics, :normal},
-      {Lanyard.Connectivity.Redis, []},
-      {Lanyard.DiscordBot, %{token: Application.get_env(:lanyard, :bot_token)}},
+      {Finch, name: Exoix.Finch},
+      {GenRegistry, worker_module: Exoix.Presence},
+      {Exoix.Metrics, :normal},
+      {Exoix.Connectivity.Redis, []},
+      {Exoix.DiscordBot, %{token: Application.get_env(:Exoix, :bot_token)}},
       {Bandit,
-       plug: Lanyard.Api.Router, scheme: :http, port: Application.get_env(:lanyard, :http_port)}
+       plug: Exoix.Api.Router, scheme: :http, port: Application.get_env(:Exoix, :http_port)}
     ]
 
-    opts = [strategy: :one_for_one, name: Lanyard.Supervisor]
+    opts = [strategy: :one_for_one, name: Exoix.Supervisor]
     Supervisor.start_link(children, opts)
   end
 

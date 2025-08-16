@@ -1,7 +1,7 @@
-defmodule Lanyard.Api.Routes.V1.Users do
-  alias Lanyard.Api.Util
-  alias Lanyard.Presence
-  alias Lanyard.Connectivity.Redis
+defmodule Exoix.Api.Routes.V1.Users do
+  alias Exoix.Api.Util
+  alias Exoix.Presence
+  alias Exoix.Connectivity.Redis
 
   use Plug.Router
 
@@ -37,12 +37,12 @@ defmodule Lanyard.Api.Routes.V1.Users do
           {:ok, parsed} = Jason.decode(body)
 
           Enum.each(parsed, fn {k, v} ->
-            with {:error, _reason} = err <- Lanyard.KV.Interface.validate_pair({k, v}) do
+            with {:error, _reason} = err <- Exoix.KV.Interface.validate_pair({k, v}) do
               throw(err)
             end
           end)
 
-          Lanyard.KV.Interface.multiset(user_id, parsed)
+          Exoix.KV.Interface.multiset(user_id, parsed)
 
           Util.respond(conn, {:ok})
         rescue
@@ -64,7 +64,7 @@ defmodule Lanyard.Api.Routes.V1.Users do
 
     case validate_resource_access(conn) do
       :ok ->
-        case Lanyard.KV.Interface.set(String.to_integer(user_id), field, put_body) do
+        case Exoix.KV.Interface.set(String.to_integer(user_id), field, put_body) do
           {:ok, _v} ->
             Util.respond(conn, {:ok})
 
@@ -82,7 +82,7 @@ defmodule Lanyard.Api.Routes.V1.Users do
 
     case validate_resource_access(conn) do
       :ok ->
-        Lanyard.KV.Interface.del(String.to_integer(user_id), field)
+        Exoix.KV.Interface.del(String.to_integer(user_id), field)
         Util.respond(conn, {:ok})
 
       :no_permission ->

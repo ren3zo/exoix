@@ -1,9 +1,9 @@
-defmodule Lanyard.DiscordBot do
+defmodule Exoix.DiscordBot do
   use GenServer
 
   require Logger
 
-  alias Lanyard.Gateway
+  alias Exoix.Gateway
 
   defstruct token: nil,
             gateway_client_pid: nil
@@ -22,7 +22,7 @@ defmodule Lanyard.DiscordBot do
 
     Logger.info("Discord bot running on #{inspect(pid)}")
 
-    Lanyard.Metrics.Collector.set(:gauge, :lanyard_monitored_users, 0)
+    Exoix.Metrics.Collector.set(:gauge, :Exoix_monitored_users, 0)
 
     {:noreply, %{state | gateway_client_pid: pid}}
   end

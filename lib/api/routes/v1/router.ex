@@ -1,6 +1,6 @@
-defmodule Lanyard.Api.Routes.V1 do
-  alias Lanyard.Api.Util
-  alias Lanyard.Api.Routes.V1.Users
+defmodule Exoix.Api.Routes.V1 do
+  alias Exoix.Api.Util
+  alias Exoix.Api.Routes.V1.Users
 
   use Plug.Router
 

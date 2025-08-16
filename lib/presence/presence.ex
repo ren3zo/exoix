@@ -1,9 +1,9 @@
-defmodule Lanyard.Presence.PublicFields do
+defmodule Exoix.Presence.PublicFields do
   @derive Jason.Encoder
   defstruct [:user_id, :discord_user, :discord_presence, :kv]
 end
 
-defmodule Lanyard.Presence.PrettyPresence do
+defmodule Exoix.Presence.PrettyPresence do
   @derive Jason.Encoder
   defstruct discord_user: %{},
             discord_status: "offline",
@@ -17,12 +17,12 @@ defmodule Lanyard.Presence.PrettyPresence do
             kv: %{}
 end
 
-defmodule Lanyard.Presence do
+defmodule Exoix.Presence do
   use GenServer
 
-  alias Lanyard.Connectivity.Redis
-  alias Lanyard.Presence.Spotify
-  alias Lanyard.Presence.Activity
+  alias Exoix.Connectivity.Redis
+  alias Exoix.Presence.Spotify
+  alias Exoix.Presence.Activity
 
   @derive Jason.Encoder
   defstruct user_id: nil,
@@ -37,7 +37,7 @@ defmodule Lanyard.Presence do
   end
 
   def init(state) do
-    kv = Lanyard.Connectivity.Redis.hgetall("lanyard_kv:#{state.user_id}")
+    kv = Exoix.Connectivity.Redis.hgetall("Exoix_kv:#{state.user_id}")
 
     {:ok, pretty_presence} =
       state
@@ -45,7 +45,7 @@ defmodule Lanyard.Presence do
       |> get_public_fields()
       |> build_pretty_presence()
 
-    subscriber_pids = Lanyard.SocketHandler.get_global_subscriber_list()
+    subscriber_pids = Exoix.SocketHandler.get_global_subscriber_list()
 
     Manifold.send(
       subscriber_pids,
@@ -133,9 +133,9 @@ defmodule Lanyard.Presence do
      %{state | subscriber_pids: state.subscriber_pids |> Enum.reject(fn sub -> sub == object end)}}
   end
 
-  @spec get_public_fields(map()) :: %Lanyard.Presence.PublicFields{}
+  @spec get_public_fields(map()) :: %Exoix.Presence.PublicFields{}
   defp get_public_fields(state) do
-    %Lanyard.Presence.PublicFields{
+    %Exoix.Presence.PublicFields{
       user_id: state.user_id,
       discord_user: state.discord_user,
       discord_presence: state.discord_presence,
@@ -147,19 +147,19 @@ defmodule Lanyard.Presence do
   # Public API
   #
 
-  @spec get_presence(number) :: {:ok, Lanyard.Presence.PrettyPresence} | {:error, atom, binary}
+  @spec get_presence(number) :: {:ok, Exoix.Presence.PrettyPresence} | {:error, atom, binary}
   def get_presence(user_id) when is_number(user_id) do
     get_presence(Integer.to_string(user_id))
   end
 
-  @spec get_presence(binary) :: {:ok, Lanyard.Presence.PrettyPresence} | {:error, atom, binary}
+  @spec get_presence(binary) :: {:ok, Exoix.Presence.PrettyPresence} | {:error, atom, binary}
   def get_presence(user_id) when is_binary(user_id) do
     case GenRegistry.lookup(__MODULE__, user_id) do
       {:ok, pid} ->
         {:ok, GenServer.call(pid, {:get_raw_data})}
 
       {:error, _reason} ->
-        {:error, :user_not_monitored, "User is not being monitored by Lanyard"}
+        {:error, :user_not_monitored, "User is not being monitored by Exoix"}
     end
   end
 
@@ -190,7 +190,7 @@ defmodule Lanyard.Presence do
     spotify_activity =
       activities
       |> Enum.find(fn activity ->
-        activity.id == Application.get_env(:lanyard, :discord_spotify_activity_id)
+        activity.id == Application.get_env(:Exoix, :discord_spotify_activity_id)
       end)
 
     has_presence? = raw_data.discord_presence !== nil
@@ -227,7 +227,7 @@ defmodule Lanyard.Presence do
 
     pretty_fields =
       if has_presence? do
-        %Lanyard.Presence.PrettyPresence{
+        %Exoix.Presence.PrettyPresence{
           discord_user: Map.put(discord_user, :id, "#{raw_data.discord_user.id}"),
           discord_status: raw_data.discord_presence.status,
           active_on_discord_web: Map.has_key?(raw_data.discord_presence.client_status, :web),
@@ -243,7 +243,7 @@ defmodule Lanyard.Presence do
           kv: raw_data.kv
         }
       else
-        %Lanyard.Presence.PrettyPresence{
+        %Exoix.Presence.PrettyPresence{
           discord_user: Map.put(discord_user, :id, "#{raw_data.discord_user.id}"),
           kv: raw_data.kv
         }
@@ -287,7 +287,7 @@ defmodule Lanyard.Presence do
             |> Map.put(:user_id, user_id)
             |> Map.put(:diff, payload)
 
-          Redis.publish("lanyard:global_sync", Jason.encode!(global_sync_payload))
+          Redis.publish("Exoix:global_sync", Jason.encode!(global_sync_payload))
         end)
       end
     end

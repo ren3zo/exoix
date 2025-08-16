@@ -1,10 +1,10 @@
-defmodule Lanyard.Gateway.Client do
+defmodule Exoix.Gateway.Client do
   # a lot of functionality here is taken from: https://github.com/rmcafee/discord_ex/blob/master/lib/discord_ex/client/client.ex
   require Logger
 
-  alias Lanyard.Gateway.Heartbeat
+  alias Exoix.Gateway.Heartbeat
 
-  import Lanyard.Gateway.Utility
+  import Exoix.Gateway.Utility
 
   @behaviour :websocket_client
 
@@ -159,7 +159,7 @@ defmodule Lanyard.Gateway.Client do
 
   @spec websocket_terminate(any(), any(), nil | keyword() | map()) :: :ok
   def websocket_terminate(reason, _conn_state, state) do
-    Lanyard.Metrics.Collector.set(:gauge, :lanyard_monitored_users, 0)
+    Exoix.Metrics.Collector.set(:gauge, :Exoix_monitored_users, 0)
 
     Logger.info("Websocket closed in state #{inspect(state)} with reason #{inspect(reason)}")
     Logger.info("Killing seq_num process!")
@@ -178,9 +178,9 @@ defmodule Lanyard.Gateway.Client do
   end
 
   def handle_event({:message_create, payload}, state) do
-    if Application.get_env(:lanyard, :is_idempotent) do
+    if Application.get_env(:Exoix, :is_idempotent) do
       Task.start(fn ->
-        Lanyard.DiscordBot.CommandHandler.handle_message(payload)
+        Exoix.DiscordBot.CommandHandler.handle_message(payload)
       end)
     end
 
@@ -190,7 +190,7 @@ defmodule Lanyard.Gateway.Client do
   def handle_event({:guild_create, payload}, state) do
     create_member_presences(payload)
 
-    # The Lanyard guild is above the large_threshold, so we need to use Opcode 8: Request Guild Members
+    # The Exoix guild is above the large_threshold, so we need to use Opcode 8: Request Guild Members
     request_payload =
       payload_build(opcode(opcodes(), :request_guild_members), %{
         "guild_id" => payload.data.id,
@@ -205,10 +205,10 @@ defmodule Lanyard.Gateway.Client do
   end
 
   def handle_event({:presence_update, payload}, state) do
-    Lanyard.Metrics.Collector.inc(:counter, :lanyard_presence_updates)
+    Exoix.Metrics.Collector.inc(:counter, :Exoix_presence_updates)
 
     with {:ok, pid} <-
-           GenRegistry.lookup(Lanyard.Presence, Integer.to_string(payload.data.user.id)) do
+           GenRegistry.lookup(Exoix.Presence, Integer.to_string(payload.data.user.id)) do
       GenServer.cast(pid, {:sync, %{discord_presence: payload.data}})
     end
 
@@ -218,7 +218,7 @@ defmodule Lanyard.Gateway.Client do
   def handle_event({:guild_member_add, payload}, state) do
     Logger.debug("User #{payload.data["user"]["id"]} joined guild")
 
-    Lanyard.Metrics.Collector.inc(:gauge, :lanyard_monitored_users)
+    Exoix.Metrics.Collector.inc(:gauge, :Exoix_monitored_users)
 
     request_payload =
       payload_build(opcode(opcodes(), :request_guild_members), %{
@@ -237,7 +237,7 @@ defmodule Lanyard.Gateway.Client do
     Logger.debug("User object for #{payload.data.user.id} was updated")
 
     with {:ok, pid} <-
-           GenRegistry.lookup(Lanyard.Presence, Integer.to_string(payload.data.user.id)) do
+           GenRegistry.lookup(Exoix.Presence, Integer.to_string(payload.data.user.id)) do
       GenServer.cast(pid, {:sync, %{discord_user: payload.data.user}})
     end
 
@@ -247,18 +247,18 @@ defmodule Lanyard.Gateway.Client do
   def handle_event({:guild_member_remove, payload}, state) do
     Logger.debug("User #{payload.data["user"]["id"]} left guild")
 
-    Lanyard.Metrics.Collector.dec(:gauge, :lanyard_monitored_users)
+    Exoix.Metrics.Collector.dec(:gauge, :Exoix_monitored_users)
 
     str_id = Integer.to_string(payload.data["user"]["id"])
 
-    GenRegistry.stop(Lanyard.Presence, str_id)
+    GenRegistry.stop(Exoix.Presence, str_id)
     :ets.delete(:cached_presences, str_id)
 
     {:ok, state}
   end
 
   def handle_event({:guild_members_chunk, payload}, state) do
-    Lanyard.Metrics.Collector.inc(:gauge, :lanyard_monitored_users, length(payload.data.members))
+    Exoix.Metrics.Collector.inc(:gauge, :Exoix_monitored_users, length(payload.data.members))
 
     create_member_presences(payload)
 
@@ -274,16 +274,16 @@ defmodule Lanyard.Gateway.Client do
       "token" => state.token,
       "properties" => %{
         "$os" => "erlang-vm",
-        "$browser" => "lanyard-worker",
-        "$device" => "lanyard-genserver",
+        "$browser" => "Exoix-worker",
+        "$device" => "Exoix-genserver",
         "$referrer" => "",
         "$referring_domain" => ""
       },
       "presence" => %{
         "since" => nil,
         "game" => %{
-          "name" => Application.get_env(:lanyard, :bot_presence),
-          "type" => Application.get_env(:lanyard, :bot_presence_type)
+          "name" => Application.get_env(:Exoix, :bot_presence),
+          "type" => Application.get_env(:Exoix, :bot_presence_type)
         },
         "status" => "online"
       },
@@ -315,7 +315,7 @@ defmodule Lanyard.Gateway.Client do
           discord_user: member.user
         }
 
-        {:ok, pid} = GenRegistry.lookup_or_start(Lanyard.Presence, gen_init.user_id, [gen_init])
+        {:ok, pid} = GenRegistry.lookup_or_start(Exoix.Presence, gen_init.user_id, [gen_init])
         GenServer.cast(pid, {:sync, gen_init})
       end)
     end)

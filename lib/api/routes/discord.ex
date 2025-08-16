@@ -1,5 +1,5 @@
-defmodule Lanyard.Api.Routes.Discord do
-  alias Lanyard.Api.Util
+defmodule Exoix.Api.Routes.Discord do
+  alias Exoix.Api.Util
 
   use Plug.Router
   plug(:match)

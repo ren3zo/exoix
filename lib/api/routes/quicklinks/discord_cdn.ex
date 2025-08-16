@@ -1,5 +1,5 @@
-defmodule Lanyard.Api.Quicklinks.DiscordCdn do
-  alias Lanyard.Api.Util
+defmodule Exoix.Api.Quicklinks.DiscordCdn do
+  alias Exoix.Api.Util
 
   import Plug.Conn
   import Bitwise
@@ -13,7 +13,7 @@ defmodule Lanyard.Api.Quicklinks.DiscordCdn do
       |> Enum.at(1)
       |> String.split(".")
 
-    presence = Lanyard.Presence.get_pretty_presence(user_id)
+    presence = Exoix.Presence.get_pretty_presence(user_id)
 
     case presence do
       {:ok, p} ->
@@ -47,7 +47,7 @@ defmodule Lanyard.Api.Quicklinks.DiscordCdn do
 
     :get
     |> Finch.build(constructed_cdn_url)
-    |> Finch.request(Lanyard.Finch)
+    |> Finch.request(Exoix.Finch)
   end
 
   defp get_proxied_avatar(id, avatar, "0", _file_type) when is_nil(avatar) do
@@ -55,7 +55,7 @@ defmodule Lanyard.Api.Quicklinks.DiscordCdn do
 
     :get
     |> Finch.build("#{@discord_cdn}/embed/avatars/#{mod}.png")
-    |> Finch.request(Lanyard.Finch)
+    |> Finch.request(Exoix.Finch)
   end
 
   defp get_proxied_avatar(_id, avatar, discriminator, _file_type) when is_nil(avatar) do
@@ -63,6 +63,6 @@ defmodule Lanyard.Api.Quicklinks.DiscordCdn do
 
     :get
     |> Finch.build("#{@discord_cdn}/embed/avatars/#{mod}.png")
-    |> Finch.request(Lanyard.Finch)
+    |> Finch.request(Exoix.Finch)
   end
 end

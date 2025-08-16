@@ -1,11 +1,11 @@
-defmodule Lanyard.Api.Router do
+defmodule Exoix.Api.Router do
   import Plug.Conn
 
-  alias Lanyard.Api.Routes.V1
-  alias Lanyard.Api.Routes.Discord
-  alias Lanyard.Api.Routes.Metrics
-  alias Lanyard.Api.Util
-  alias Lanyard.Api.Quicklinks
+  alias Exoix.Api.Routes.V1
+  alias Exoix.Api.Routes.Discord
+  alias Exoix.Api.Routes.Metrics
+  alias Exoix.Api.Util
+  alias Exoix.Api.Quicklinks
 
   use Plug.Router
 
@@ -26,36 +26,55 @@ defmodule Lanyard.Api.Router do
     stat =
       cond do
         conn.status >= 200 && conn.status < 300 ->
-          :lanyard_2xx_responses
+          :Exoix_2xx_responses
 
         conn.status >= 400 && conn.status < 500 ->
-          :lanyard_4xx_responses
+          :Exoix_4xx_responses
 
         conn.status >= 500 ->
-          :lanyard_5xx_responses
+          :Exoix_5xx_responses
       end
 
-    Lanyard.Metrics.Collector.inc(:counter, stat)
+    Exoix.Metrics.Collector.inc(:counter, stat)
 
     conn
   end
 
   get "/" do
-    response = %{
-      info:
-        "Lanyard provides Discord presences as an API and WebSocket. Find out more here: https://github.com/Phineas/lanyard",
-      monitored_user_count: GenRegistry.count(Lanyard.Presence),
-      discord_invite: "https://discord.gg/lanyard"
-    }
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_file(200, "priv/static/index.html")
+  end
 
-    Util.respond(conn, {:ok, response})
+  get "/home" do
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_file(200, "priv/static/home.html")
+  end
+
+  get "/credits" do
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_file(200, "priv/static/credits.html")
+  end
+
+  get "/style.css" do
+    conn
+    |> put_resp_content_type("text/css")
+    |> send_file(200, "priv/static/style.css")
+  end
+
+  get "/script.js" do
+    conn
+    |> put_resp_content_type("application/javascript")
+    |> send_file(200, "priv/static/script.js")
   end
 
   get "/socket" do
     conn = %Plug.Conn{query_params: params} = fetch_query_params(conn)
 
     conn
-    |> WebSockAdapter.upgrade(Lanyard.SocketHandler, params, timeout: 60_000)
+    |> WebSockAdapter.upgrade(Exoix.SocketHandler, params, timeout: 60_000)
     |> halt()
   end
 

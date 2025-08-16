@@ -1,9 +1,9 @@
-defmodule Lanyard.Metrics.Exporter do
+defmodule Exoix.Metrics.Exporter do
   @behaviour Plug
   import Plug.Conn
 
   path = "/metrics"
-  registry = :lanyard_registry
+  registry = :Exoix_registry
 
   def init(_opts) do
   end

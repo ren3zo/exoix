@@ -1,7 +1,7 @@
-defmodule Lanyard.SocketHandler do
+defmodule Exoix.SocketHandler do
   require Logger
 
-  alias Lanyard.Presence
+  alias Exoix.Presence
 
   @type t :: %{
           awaiting_init: boolean,
@@ -24,7 +24,7 @@ defmodule Lanyard.SocketHandler do
 
     state = %__MODULE__{awaiting_init: true, encoding: "json", compression: compression}
 
-    Lanyard.Metrics.Collector.inc(:gauge, :lanyard_connected_sessions)
+    Exoix.Metrics.Collector.inc(:gauge, :Exoix_connected_sessions)
 
     {:reply, :ok,
      construct_socket_msg(state.compression, %{op: 1, d: %{"heartbeat_interval" => 30000}}),
@@ -36,7 +36,7 @@ defmodule Lanyard.SocketHandler do
   end
 
   def handle_in({json, _type}, state) do
-    Lanyard.Metrics.Collector.inc(:counter, :lanyard_messages_inbound)
+    Exoix.Metrics.Collector.inc(:counter, :Exoix_messages_inbound)
 
     case Jason.decode(json) do
       {:ok, json} when is_map(json) ->
@@ -55,7 +55,7 @@ defmodule Lanyard.SocketHandler do
                     Presence.subscribe_to_ids_and_build(ids)
 
                   %{"subscribe_to_id" => id} ->
-                    case GenRegistry.lookup(Lanyard.Presence, id) do
+                    case GenRegistry.lookup(Exoix.Presence, id) do
                       {:ok, pid} ->
                         {:ok, raw_data} = Presence.get_presence(id)
                         {_, presence} = Presence.build_pretty_presence(raw_data)
@@ -74,7 +74,7 @@ defmodule Lanyard.SocketHandler do
 
                   %{"subscribe_to_all" => true} ->
                     ids =
-                      GenRegistry.reduce(Lanyard.Presence, [], fn {id, _pid}, acc ->
+                      GenRegistry.reduce(Exoix.Presence, [], fn {id, _pid}, acc ->
                         [id | acc]
                       end)
 
@@ -108,7 +108,7 @@ defmodule Lanyard.SocketHandler do
           4 ->
             case json["d"] do
               %{"unsubscribe_from_id" => id} ->
-                {:ok, pid} = GenRegistry.lookup(Lanyard.Presence, id)
+                {:ok, pid} = GenRegistry.lookup(Exoix.Presence, id)
 
                 unless not Process.alive?(pid) do
                   send(pid, {:remove_subscriber, pid})
@@ -136,7 +136,7 @@ defmodule Lanyard.SocketHandler do
       {"subscribers", List.delete(get_global_subscriber_list(), self())}
     )
 
-    Lanyard.Metrics.Collector.dec(:gauge, :lanyard_connected_sessions)
+    Exoix.Metrics.Collector.dec(:gauge, :Exoix_connected_sessions)
 
     :ok
   end
@@ -152,7 +152,7 @@ defmodule Lanyard.SocketHandler do
   end
 
   defp construct_socket_msg(compression, data) do
-    Lanyard.Metrics.Collector.inc(:counter, :lanyard_messages_outbound)
+    Exoix.Metrics.Collector.inc(:counter, :Exoix_messages_outbound)
 
     case compression do
       :zlib ->

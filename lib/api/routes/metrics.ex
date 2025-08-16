@@ -1,7 +1,7 @@
-defmodule Lanyard.Api.Routes.Metrics do
+defmodule Exoix.Api.Routes.Metrics do
   use Plug.Router
 
-  plug(Lanyard.Metrics.Exporter)
+  plug(Exoix.Metrics.Exporter)
 
   plug(:match)
   plug(:dispatch)

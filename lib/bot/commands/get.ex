@@ -1,6 +1,6 @@
-defmodule Lanyard.DiscordBot.Commands.Get do
-  alias Lanyard.DiscordBot.DiscordApi
-  alias Lanyard.DiscordBot.Commands.ApiKey
+defmodule Exoix.DiscordBot.Commands.Get do
+  alias Exoix.DiscordBot.DiscordApi
+  alias Exoix.DiscordBot.Commands.ApiKey
 
   def handle([key], payload) do
     case ApiKey.validate_api_key(payload["author"]["id"], key) do
@@ -13,7 +13,7 @@ defmodule Lanyard.DiscordBot.Commands.Get do
         ApiKey.generate_and_send_new(payload["author"]["id"])
 
       {false} ->
-        case Lanyard.KV.Interface.get(payload["author"]["id"], key) do
+        case Exoix.KV.Interface.get(payload["author"]["id"], key) do
           {:ok, v} ->
             DiscordApi.send_message(
               payload["channel_id"],
@@ -39,7 +39,7 @@ defmodule Lanyard.DiscordBot.Commands.Get do
       [{false}] ->
         DiscordApi.send_message(
           payload["channel_id"],
-          "Invalid usage. Example `get` command usage:\n`#{Application.get_env(:lanyard, :command_prefix)}get <key>`"
+          "Invalid usage. Example `get` command usage:\n`#{Application.get_env(:Exoix, :command_prefix)}get <key>`"
         )
 
       _ ->

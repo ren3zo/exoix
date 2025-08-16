@@ -1,8 +1,8 @@
-defmodule Lanyard.Gateway.Heartbeat do
+defmodule Exoix.Gateway.Heartbeat do
   use GenServer
   require Logger
-  import Lanyard.Gateway.Client, only: [opcodes: 0]
-  import Lanyard.Gateway.Utility
+  import Exoix.Gateway.Client, only: [opcodes: 0]
+  import Exoix.Gateway.Utility
 
   def start_link(agent_seq_num, interval, socket_pid, opts \\ []) do
     GenServer.start_link(__MODULE__, {agent_seq_num, interval, socket_pid}, opts)

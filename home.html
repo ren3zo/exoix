@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exoix - Discord Status Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, rgba(114, 137, 218, 0.1) 0%, rgba(88, 101, 242, 0.1) 100%);
+            border-radius: 20px;
+            margin-bottom: 3rem;
+        }
+        
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #7289da, #5865f2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-section p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-button {
+            background: linear-gradient(45deg, #7289da, #5865f2);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(114, 137, 218, 0.3);
+        }
+        
+        .cta-button.secondary {
+            background: transparent;
+            border: 2px solid #7289da;
+            color: #7289da;
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(114, 137, 218, 0.1);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-item i {
+            font-size: 2.5rem;
+            color: #7289da;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        
+        .feature-item p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .how-it-works {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .how-it-works h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #7289da;
+            text-align: center;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #7289da, #5865f2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .step h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .step p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .examples {
+            margin-bottom: 3rem;
+        }
+        
+        .examples h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #7289da;
+            text-align: center;
+        }
+        
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .example-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .example-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            border: 3px solid #7289da;
+        }
+        
+        .example-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .example-card p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            color: #7289da;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s ease;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="nav-bar">
+            <div class="logo">
+                <h2><i class="fab fa-discord"></i> Exoix</h2>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Status Tracker</a>
+                <a href="credits.html">Credits</a>
+                <a href="https://exoix.lol" target="_blank">Website</a>
+            </div>
+        </nav>
+
+        <div class="hero-section">
+            <h1>Welcome to Exoix</h1>
+            <p>The ultimate Discord status tracker that shows real-time information about Discord users, including their current status, Spotify activity, gaming sessions, and more!</p>
+            <div class="cta-buttons">
+                <a href="index.html" class="cta-button">Try Status Tracker</a>
+                <a href="https://discord.gg/qJeqC2m8Jc" target="_blank" class="cta-button secondary">Join Discord</a>
+            </div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <i class="fas fa-music"></i>
+                <h3>Spotify Integration</h3>
+                <p>See what music your friends are listening to in real-time, complete with album artwork and track information.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-gamepad"></i>
+                <h3>Game Activity</h3>
+                <p>Track what games your friends are playing, including custom status messages and activity details.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-code"></i>
+                <h3>Development Status</h3>
+                <p>Monitor coding activities, see what projects your developer friends are working on, and track their progress.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-clock"></i>
+                <h3>Real-time Updates</h3>
+                <p>Get instant updates when your friends' status changes, with automatic refresh every 30 seconds.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Mobile Friendly</h3>
+                <p>Responsive design that works perfectly on desktop, tablet, and mobile devices.</p>
+            </div>
+            <div class="feature-item">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Privacy Focused</h3>
+                <p>Only shows information that users have publicly shared on Discord - no private data is accessed.</p>
+            </div>
+        </div>
+
+        <div class="how-it-works">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Get Discord ID</h3>
+                    <p>Right-click on any Discord user's profile and copy their User ID</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Paste & Search</h3>
+                    <p>Paste the Discord ID into the search box and click "Check Status"</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>View Results</h3>
+                    <p>See real-time information about their status, activities, and more!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <h2>What You Can Track</h2>
+            <div class="example-grid">
+                <div class="example-card">
+                    <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="User Status">
+                    <h3>Online Status</h3>
+                    <p>See if someone is online, idle, do not disturb, or offline</p>
+                </div>
+                <div class="example-card">
+                    <img src="https://i.scdn.co/image/ab67616d0000b27364840995fe43bb2ec73a241d" alt="Spotify">
+                    <h3>Spotify Activity</h3>
+                    <p>View currently playing songs with album art and artist info</p>
+                </div>
+                <div class="example-card">
+                    <img src="https://cdn.discordapp.com/embed/avatars/1.png" alt="Game Activity">
+                    <h3>Game Activity</h3>
+                    <p>See what games are being played and custom status messages</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-rocket"></i>
+                <h3>Fast & Reliable</h3>
+                <p>Built with modern web technologies for lightning-fast performance</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-heart"></i>
+                <h3>Made with Love</h3>
+                <p>Created by Uni as a passion project for the Discord community</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-globe"></i>
+                <h3>Always Available</h3>
+                <p>Access your friends' status from anywhere, anytime</p>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Built with ❤️ by Uni • <a href="https://exoix.lol" target="_blank">exoix.lol</a></p>
+            <small>Last updated: December 2025 • Powered by Exoix API</small>
+        </footer>
+    </div>
+</body>
+</html>
