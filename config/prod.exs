@@ -9,3 +9,10 @@ config :Exoix,
   bot_token: System.get_env("BOT_TOKEN"),
   redis_uri:
     System.get_env("REDIS_DSN") || System.get_env("REDIS_URI") || System.get_env("REDIS_URL")
+
+# Ensure the app starts properly in production
+config :bandit,
+  port: String.to_integer(System.get_env("PORT") || "4001")
+
+# Enable logging in production
+config :logger, level: :info
