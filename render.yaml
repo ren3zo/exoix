@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: exoix-api
+    env: elixir
+    buildCommand: mix deps.get && mix compile
+    startCommand: mix run --no-halt
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: REDIS_URI
+        fromDatabase:
+          name: exoix-redis
+          property: connectionString
+
+databases:
+  - name: exoix-redis
+    databaseName: exoix
+    user: exoix
