@@ -26,6 +26,42 @@ defmodule Exoix.Api.Routes.V1.Users do
     Util.respond(conn, Presence.get_pretty_presence(user_id))
   end
 
+  post "/:id/monitor" do
+    %Plug.Conn{params: %{"id" => user_id}} = conn
+
+    # Manually add user to monitoring (temporary for testing)
+    gen_init = %{
+      user_id: user_id,
+      discord_presence: nil,
+      discord_user: %{
+        id: user_id,
+        username: "Uni",
+        discriminator: "0000",
+        avatar: nil,
+        bot: false,
+        system: false,
+        mfa_enabled: false,
+        banner: nil,
+        accent_color: nil,
+        locale: "en-US",
+        verified: false,
+        email: nil,
+        flags: 0,
+        premium_type: 0,
+        public_flags: 0
+      }
+    }
+
+    case GenRegistry.lookup_or_start(Exoix.Presence, user_id, [gen_init]) do
+      {:ok, pid} ->
+        GenServer.cast(pid, {:sync, gen_init})
+        Util.respond(conn, {:ok, %{message: "User #{user_id} added to monitoring"}})
+
+      {:error, reason} ->
+        Util.respond(conn, {:error, :monitoring_failed, reason})
+    end
+  end
+
   patch "/:id/kv" do
     %Plug.Conn{params: %{"id" => user_id}} = conn
 
