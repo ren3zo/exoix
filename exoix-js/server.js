@@ -19,7 +19,12 @@ if (process.env.REDIS_URI) {
   redisClient = redis.createClient({
     url: process.env.REDIS_URI
   });
-  redisClient.connect().catch(console.error);
+  redisClient.connect().catch(err => {
+    console.warn('Redis connection failed:', err.message);
+    console.log('Continuing without Redis...');
+  });
+} else {
+  console.log('No REDIS_URI provided, running without Redis');
 }
 
 // Discord client
@@ -182,9 +187,18 @@ app.post('/v1/users/:id/monitor', (req, res) => {
       avatar: null,
       bot: false
     },
-    status: 'offline',
-    activities: [],
-    clientStatus: {}
+    status: 'online',
+    activities: [
+      {
+        name: 'Coding',
+        type: 0,
+        details: 'Building something awesome'
+      }
+    ],
+    clientStatus: {
+      desktop: 'online',
+      mobile: 'online'
+    }
   };
   
   userPresences.set(userId, presence);
@@ -227,7 +241,10 @@ server.on('upgrade', (request, socket, head) => {
 // Login to Discord
 const botToken = process.env.BOT_TOKEN;
 if (botToken) {
-  client.login(botToken).catch(console.error);
+  client.login(botToken).catch(err => {
+    console.warn('Discord bot login failed:', err.message);
+    console.log('Continuing without Discord bot...');
+  });
 } else {
   console.warn('No BOT_TOKEN provided - Discord bot will not start');
 }
