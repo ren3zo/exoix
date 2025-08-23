@@ -17,21 +17,12 @@ async function loadUserData() {
     showLoading();
 
     try {
-        // Try local API first, then fallback to hosted
-        const response = await fetch(`http://localhost:4001/v1/users/${userId}`);
-        
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
         if (!response.ok) {
-            // Fallback to hosted API
-            const hostedResponse = await fetch(`https://api.Exoix.rest/v1/users/${userId}`);
-            if (!hostedResponse.ok) {
-                throw new Error('User not found or API is down');
-            }
-            const data = await hostedResponse.json();
-            displayUserData(data.data);
-        } else {
-            const data = await response.json();
-            displayUserData(data.data);
+            throw new Error('User not found or API is down');
         }
+        const data = await response.json();
+        displayUserData(data.data);
     } catch (error) {
         console.error('Error fetching user data:', error);
         showError(`Oops! Something went wrong: ${error.message}`);
@@ -49,11 +40,20 @@ function displayUserData(userData) {
     const statusClass = getStatusClass(userData.discord_status);
     const statusText = getStatusText(userData.discord_status);
     
+    const discordUser = userData.discord_user || {};
+    const avatarHash = discordUser.avatar || '';
+    const isGif = typeof avatarHash === 'string' && avatarHash.startsWith('a_');
+    const avatarExt = isGif ? 'gif' : 'png';
+    const fallbackIndex = Number(discordUser.discriminator ?? 0) % 5;
+    const avatarUrl = avatarHash
+        ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${avatarHash}.${avatarExt}?size=1024`
+        : `https://cdn.discordapp.com/embed/avatars/${fallbackIndex}.png`;
+    
     let html = `
         <div class="user-card">
             <div class="user-header">
-                <img src="https://cdn.discordapp.com/avatars/${userData.discord_user.id}/${userData.discord_user.avatar}.${userData.discord_user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=1024" 
-                     alt="${userData.discord_user.username}" 
+                <img src="${avatarUrl}" 
+                     alt="${discordUser.username || 'User'}" 
                      class="user-avatar"
                      onerror="this.src='https://cdn.discordapp.com/embed/avatars/0.png'">
                 <div class="user-info">
