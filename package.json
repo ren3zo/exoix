@@ -25,6 +25,9 @@
   },
   "homepage": "https://github.com/av8y/exoix#readme",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "framer-motion": "12.23.12",
     "next": "^14.2.32",
