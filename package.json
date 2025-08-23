@@ -1,0 +1,33 @@
+{
+  "name": "exoix-next",
+  "version": "1.0.0",
+  "description": "<img src=\"https://storage.googleapis.com/Exoix/static/Exoixtemplogo.png\" alt=\"Exoix Logo\" width=\"300\"/>",
+  "main": "script.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/av8y/exoix.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/av8y/exoix/issues"
+  },
+  "homepage": "https://github.com/av8y/exoix#readme",
+  "type": "module",
+  "dependencies": {
+    "next": "^14.2.32",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
