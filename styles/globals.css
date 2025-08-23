@@ -8,10 +8,13 @@
 
 body {
 	font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-	background: #000000;
+	background: radial-gradient(1200px 800px at 20% -10%, rgba(88,101,242,0.18), transparent 60%),
+		radial-gradient(1000px 600px at 100% 20%, rgba(114,137,218,0.16), transparent 60%),
+		#000000;
 	min-height: 100vh;
 	color: #ffffff;
 	line-height: 1.6;
+	background-attachment: fixed;
 }
 
 .container {
@@ -34,6 +37,8 @@ body {
 	-webkit-text-fill-color: transparent;
 	background-clip: text;
 	letter-spacing: -0.5px;
+	background-size: 200% 200%;
+	animation: shimmer 8s ease-in-out infinite;
 }
 
 .header p {
@@ -138,13 +143,62 @@ body {
 }
 
 .user-card {
-	background: rgba(255, 255, 255, 0.05);
+	background: rgba(255, 255, 255, 0.06);
 	border-radius: 16px;
 	padding: 2rem;
 	backdrop-filter: blur(10px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.12);
 	margin-bottom: 2rem;
-	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.42);
+	position: relative;
+	overflow: hidden;
+}
+
+/* Floating Icons Layer */
+.floating-icons {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	opacity: .35;
+	z-index: 0;
+}
+
+.floating-icon {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	filter: drop-shadow(0 8px 20px rgba(88,101,242,.25));
+	user-select: none;
+}
+
+/* Elevate content above floating icons */
+.container, .header, .status-container, .features, .footer { position: relative; z-index: 1; }
+
+/* Subtle card hover lift for all cards */
+.activity-card, .feature-card { transition: transform .25s ease, box-shadow .25s ease; }
+.activity-card:hover, .feature-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+
+/* Animated gradient accents */
+@keyframes shimmer {
+	0% { background-position: 0% 50%; }
+	100% { background-position: 100% 50%; }
+}
+
+.header h1 {
+	background-size: 200% 200%;
+	animation: shimmer 8s ease-in-out infinite;
+}
+
+/* Improve button focus styles */
+.search-box button:focus-visible {
+	outline: 2px solid #7289da;
+	outline-offset: 2px;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.floating-icons { display: none; }
+	* { animation: none !important; transition: none !important; }
 }
 
 .user-header {

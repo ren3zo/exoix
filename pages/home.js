@@ -1,6 +1,29 @@
+import { motion } from "framer-motion";
+
+function FloatingIcons() {
+	const icons = Array.from({ length: 10 }).map((_, i) => i);
+	return (
+		<div aria-hidden className="floating-icons">
+			{icons.map((i) => (
+				<motion.img
+					key={i}
+					src="/discord.svg"
+					alt=""
+					className="floating-icon"
+					initial={{ opacity: 0, y: 10, scale: .9 }}
+					animate={{ opacity: [0.3, .7, .3], y: [0, -25, 0], x: [0, 8, -6, 0], scale: [0.95, 1.03, 0.97] }}
+					transition={{ duration: 7 + i * .25, repeat: Infinity, ease: "easeInOut" }}
+					style={{ left: `${(i * 11) % 100}%`, top: `${(i * 17) % 100}%` }}
+				/>
+			))}
+		</div>
+	);
+}
+
 export default function Home() {
 	return (
 		<div className="container">
+			<FloatingIcons />
 			<nav className="nav-bar" style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'2rem',padding:'1rem 0'}}>
 				<div className="logo"><h2>Exoix</h2></div>
 				<div className="nav-links" style={{display:'flex',gap:'2rem'}}>
@@ -10,14 +33,14 @@ export default function Home() {
 				</div>
 			</nav>
 
-			<div className="hero-section" style={{textAlign:'center',padding:'4rem 2rem',background:'linear-gradient(135deg, rgba(114, 137, 218, 0.1) 0%, rgba(88, 101, 242, 0.1) 100%)',borderRadius:20,marginBottom:'3rem'}}>
-				<h1 style={{fontSize:'3.5rem',fontWeight:700,marginBottom:'1rem',background:'linear-gradient(45deg, #7289da, #5865f2)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>Welcome to Exoix</h1>
-				<p style={{fontSize:'1.3rem',opacity:.9,marginBottom:'2rem',maxWidth:600,margin:'0 auto'}}>The ultimate Discord status tracker that shows real-time information about Discord users, including their current status, Spotify activity, gaming sessions, and more!</p>
+			<motion.div className="hero-section" style={{textAlign:'center',padding:'4rem 2rem',background:'linear-gradient(135deg, rgba(114, 137, 218, 0.1) 0%, rgba(88, 101, 242, 0.1) 100%)',borderRadius:20,marginBottom:'3rem'}} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
+				<motion.h1 style={{fontSize:'3.5rem',fontWeight:700,marginBottom:'1rem',background:'linear-gradient(45deg, #7289da, #5865f2)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .05, duration: .5 }}>Welcome to Exoix</motion.h1>
+				<motion.p style={{fontSize:'1.3rem',opacity:.9,marginBottom:'2rem',maxWidth:600,margin:'0 auto'}} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .1, duration: .5 }}>The ultimate Discord status tracker that shows real-time information about Discord users, including their current status, Spotify activity, gaming sessions, and more!</motion.p>
 				<div className="cta-buttons" style={{display:'flex',gap:'1rem',justifyContent:'center',flexWrap:'wrap'}}>
-					<a href="/" className="cta-button" style={{background:'linear-gradient(45deg, #7289da, #5865f2)',color:'#fff',padding:'1rem 2rem',borderRadius:10,textDecoration:'none',fontWeight:600}}>Try Status Tracker</a>
-					<a href="https://discord.gg/qJeqC2m8Jc" target="_blank" rel="noreferrer" className="cta-button secondary" style={{background:'transparent',border:'2px solid #7289da',color:'#7289da',padding:'1rem 2rem',borderRadius:10,textDecoration:'none',fontWeight:600}}>Join Discord</a>
+					<motion.a href="/" className="cta-button" style={{background:'linear-gradient(45deg, #7289da, #5865f2)',color:'#fff',padding:'1rem 2rem',borderRadius:10,textDecoration:'none',fontWeight:600}} whileHover={{ y: -2 }} whileTap={{ scale: .98 }}>Try Status Tracker</motion.a>
+					<motion.a href="https://discord.gg/qJeqC2m8Jc" target="_blank" rel="noreferrer" className="cta-button secondary" style={{background:'transparent',border:'2px solid #7289da',color:'#7289da',padding:'1rem 2rem',borderRadius:10,textDecoration:'none',fontWeight:600}} whileHover={{ y: -2 }} whileTap={{ scale: .98 }}>Join Discord</motion.a>
 				</div>
-			</div>
+			</motion.div>
 
 			<div className="features-grid" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))',gap:'2rem',marginBottom:'3rem'}}>
 				{[
@@ -28,28 +51,11 @@ export default function Home() {
 					{icon:'📱', title:'Mobile Friendly', desc:'Responsive design that works perfectly on desktop, tablet, and mobile devices.'},
 					{icon:'🛡️', title:'Privacy Focused', desc:'Only shows information that users have publicly shared on Discord - no private data is accessed.'}
 				].map((f, i) => (
-					<div key={i} className="feature-item" style={{background:'rgba(255,255,255,0.05)',borderRadius:16,padding:'2rem',border:'1px solid rgba(255,255,255,0.1)'}}>
+					<motion.div key={i} className="feature-item" style={{background:'rgba(255,255,255,0.05)',borderRadius:16,padding:'2rem',border:'1px solid rgba(255,255,255,0.1)'}} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .3 }} transition={{ duration: .35, delay: i * .04 }}>
 						<h3 style={{fontSize:'1.3rem',marginBottom:'1rem',color:'#fff'}}>{f.title}</h3>
 						<p style={{opacity:.8,lineHeight:1.6}}>{f.desc}</p>
-					</div>
+					</motion.div>
 				))}
-			</div>
-
-			<div className="how-it-works" style={{background:'rgba(255,255,255,0.03)',borderRadius:16,padding:'2rem',marginBottom:'3rem',border:'1px solid rgba(255,255,255,0.1)'}}>
-				<h2 style={{fontSize:'2rem',marginBottom:'1.5rem',color:'#7289da',textAlign:'center'}}>How It Works</h2>
-				<div className="steps" style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(250px, 1fr))',gap:'2rem'}}>
-					{[
-						{n:1,title:'Get Discord ID',desc:'Right-click on any Discord user\'s profile and copy their User ID'},
-						{n:2,title:'Paste & Search',desc:'Paste the Discord ID into the search box and click "Check Status"'},
-						{n:3,title:'View Results',desc:'See real-time information about their status, activities, and more!'}
-					].map(s => (
-						<div className="step" key={s.n} style={{textAlign:'center',padding:'1.5rem'}}>
-							<div className="step-number" style={{width:50,height:50,background:'linear-gradient(45deg, #7289da, #5865f2)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 1rem',fontWeight:700,fontSize:'1.2rem'}}>{s.n}</div>
-							<h3 style={{fontSize:'1.2rem',marginBottom:'.5rem'}}>{s.title}</h3>
-							<p style={{opacity:.8,fontSize:'.9rem'}}>{s.desc}</p>
-						</div>
-					))}
-				</div>
 			</div>
 
 			<footer className="footer">
