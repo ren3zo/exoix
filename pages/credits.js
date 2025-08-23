@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
+import Navbar from "../components/Navbar";
 
 export default function Credits() {
 	return (
 		<div className="container" style={{maxWidth:800,margin:'0 auto'}}>
+			<Navbar />
 			<div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'2rem'}}>
-				<a href="/" style={{color:'#7289da',textDecoration:'none',fontWeight:500}}>← Back to Status Tracker</a>
-				<a href="/home" style={{color:'#7289da',textDecoration:'none',fontWeight:500}}>Home</a>
+				<a href="/status" style={{color:'#7289da',textDecoration:'none',fontWeight:500}}>← Back to Status Tracker</a>
+				<a href="/" style={{color:'#7289da',textDecoration:'none',fontWeight:500}}>Home</a>
 			</div>
 
 			<div style={{textAlign:'center',marginBottom:'3rem'}}>
