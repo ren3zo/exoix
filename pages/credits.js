@@ -16,10 +16,10 @@ export default function Credits() {
 			<section className="credit-section">
 				<h2 style={{color:'#7289da',fontSize:'1.5rem',marginBottom:'1rem',fontWeight:600}}>Special Thanks</h2>
 				<motion.p initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .25 }}>
-					<strong>Lanyard</strong>: Real-time Discord presence data is powered by the Lanyard API.
+					<strong>Lanyard</strong>: Real-time Discord presence data is powered by the <a href="https://lanyard.rest" target="_blank" rel="noreferrer" style={{color:'#7289da'}}>Lanyard API</a>.
 				</motion.p>
 				<motion.p initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .25, delay: .03 }}>
-					<strong>Phineas</strong>: Owner and creator of Lanyard. Thank you for maintaining such a great service for the community.
+					<strong>Phineas</strong>: <a href="https://github.com/Phineas" target="_blank" rel="noreferrer" style={{color:'#7289da'}}>Phineas</a> — owner and creator of Lanyard. Thank you for maintaining such a great service for the community.
 				</motion.p>
 				<motion.p initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .25, delay: .06 }}>
 					<strong>Discord</strong>: For providing the platform and APIs that make this possible.

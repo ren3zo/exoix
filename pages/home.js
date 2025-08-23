@@ -28,6 +28,7 @@ export default function Home() {
 				<div className="logo"><h2>Exoix</h2></div>
 				<div className="nav-links" style={{display:'flex',gap:'2rem'}}>
 					<a href="/">Status Tracker</a>
+					<a href="/how-to-use">How to Use</a>
 					<a href="/credits">Credits</a>
 					<a href="https://exoix.lol" target="_blank" rel="noreferrer">Website</a>
 				</div>
