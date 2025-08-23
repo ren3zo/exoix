@@ -11,5 +11,13 @@
 		{ "source": "/", "destination": "/index.html" },
 		{ "source": "/home", "destination": "/home.html" },
 		{ "source": "/credits", "destination": "/credits.html" }
+	],
+	"redirects": [
+		{
+			"source": "/(.*)",
+			"has": [{ "type": "host", "value": "www.exoix.lol" }],
+			"destination": "https://exoix.lol/$1",
+			"permanent": true
+		}
 	]
 }
