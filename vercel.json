@@ -1,0 +1,23 @@
+{
+	"version": 2,
+	"framework": null,
+	"buildCommand": "",
+	"installCommand": "",
+	"outputDirectory": "priv/static",
+	"public": true,
+	"cleanUrls": true,
+	"trailingSlash": false,
+	"rewrites": [
+		{ "source": "/", "destination": "/index.html" },
+		{ "source": "/home", "destination": "/home.html" },
+		{ "source": "/credits", "destination": "/credits.html" }
+	],
+	"redirects": [
+		{
+			"source": "/(.*)",
+			"has": [{ "type": "host", "value": "www.exoix.lol" }],
+			"destination": "https://exoix.lol/$1",
+			"permanent": true
+		}
+	]
+}
